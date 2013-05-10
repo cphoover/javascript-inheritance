@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html>
+    <head>
+    </head>
+    <body>
+        <script> 
+
+            //namespace so as not to pollute the global scope
+            var App = {};
+
+           /* MODULE PATTERN W/ Object.create **/
+            App.AnimalModule = (function(/** no dependencies **/){
+                /** can put private/inaccessable vars above self **/
+                /** they will still be available in closure **/
+
+                var firstName  = "bobby";   
+                var lastName   = "mcGee";
+
+                /** public members **/
+                var self = {};
+                self.name = firstName + " " + lastName;
+                self.age  = 23;
+                self.talk = function(){
+                    console.log('hey hows it going');
+                };
+
+                return self;                
+
+            })();
+
+            App.DogModule = (function(AnimalModule){
+                var self = Object.create(AnimalModule);
+                self.name = "roofus";
+                self.talk = function(){
+                    console.log('woof woof');
+                };
+                return self;
+            })(App.AnimalModule);
+    
+           /* PSEUDO CLASSICAL METHOD */
+           /** PARENT CLASS **/
+
+            App.AnimalClass = (function(){
+
+                function AnimalClass(){
+                  var firstName = "bobby";
+                  var lastName  = "mcGee";
+
+                  this.name = firstName + " " + lastName;
+                  this.age = 23;
+                }
+
+                AnimalClass.prototype.talk = function(){
+                   console.log('hey hows it going');
+                };
+
+                return AnimalClass;
+
+           })();
+
+           App.DogClass = (function(AnimalClass){
+                  /** CHILD CLASS **/
+                function DogClass(){
+                   //call super
+                   AnimalClass.call(this);
+                   this.name = "roofus";
+                }
+           
+
+                DogClass.prototype = new AnimalClass();
+                DogClass.constructor = DogClass;
+
+                DogClass.prototype.talk = function(){
+                    console.log('woof woof');
+                };
+    
+                return DogClass;
+
+            })(App.AnimalClass);
+
+            (function main(){
+               var bob1 = Object.create(App.AnimalModule);
+               var bob2 = new App.AnimalClass();
+
+               var roofus1 = Object.create(App.DogModule);
+               var roofus2 = new App.DogClass();
+
+               console.log(bob1);
+               bob1.talk();
+               console.log(bob2);
+               bob2.talk();
+               console.log(roofus1);
+               roofus1.talk();
+               console.log(roofus2);
+               roofus2.talk();
+            })();
+
+            
+
+             
+        </script>
+    </body>
+</html>
+
